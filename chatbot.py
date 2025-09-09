@@ -1,30 +1,11 @@
-"""
-Rule-based cryptocurrency chatbot (beginner-friendly)
-
-Features:
-- Uses simple if/else logic (no external ML libraries) to answer natural-ish queries.
-- Analyzes profitability (price trend + market cap) and sustainability (energy use + sustainability_score).
-- Lets you pick a conversational tone: friendly, professional, or meme-loving.
-- Commands supported: list, trending, sustainable, analyze <coin>, recommend, tone, help, exit.
-
-How to run:
-- Save as a Python file, for example `crypto_chatbot_rulebased.py` and run `python crypto_chatbot_rulebased.py` (Python 3.8+).
-- Interact via the terminal.
-
-This file is intentionally commented so beginners can follow and extend it.
-"""
-
 from typing import Dict, Any, Optional
 
-# -----------------------
-# Predefined dataset (as requested)
-# -----------------------
+
 crypto_db: Dict[str, Dict[str, Any]] = {
     "Bitcoin": {
         "price_trend": "rising",
         "market_cap": "high",
         "energy_use": "high",
-        # using fraction (3/10) will evaluate to 0.3 in Python; it's intentional and clear for beginners
         "sustainability_score": 3/10,
     },
     "Ethereum": {
@@ -41,9 +22,6 @@ crypto_db: Dict[str, Dict[str, Any]] = {
     },
 }
 
-# -----------------------
-# Tone management
-# -----------------------
 AVAILABLE_TONES = ("friendly", "professional", "meme")
 
 
@@ -66,9 +44,6 @@ def tone_prefix(tone: str) -> str:
     # friendly default
     return "Hey there! Let's find you a green and growing crypto 🌱"
 
-# -----------------------
-# Small helpers
-# -----------------------
 
 MARKET_CAP_WEIGHT = {"high": 1.0, "medium": 0.7, "low": 0.4}
 TREND_WEIGHT = {"rising": 0.9, "stable": 0.6, "falling": 0.2, "declining": 0.2}
@@ -82,10 +57,6 @@ def find_coin_by_name(name: str) -> Optional[str]:
         if k.lower() == name:
             return k
     return None
-
-# -----------------------
-# Analysis & Rules
-# -----------------------
 
 def compute_profitability_score(coin: Dict[str, Any]) -> float:
     """
@@ -136,9 +107,6 @@ def recommendation_label(score: float) -> str:
         return "Sell"
     return "Strong Sell"
 
-# -----------------------
-# Query handlers
-# -----------------------
 
 def handle_list() -> str:
     return "Available coins: " + ", ".join(sorted(crypto_db.keys()))
@@ -179,14 +147,13 @@ def handle_analyze(name: str) -> str:
         f" - Sustainability index: {s:.2f}",
         f" -> Combined score: {combined:.2f} => Recommendation: {label}",
     ]
-    # gentle risk note for small projects
+
     if coin.get('market_cap') == 'low' and combined >= 0.6:
         lines.append("Note: strong signal but small market cap increases risk; consider a smaller position size.")
     return "".join(lines)
 
 
 def handle_recommendation() -> str:
-    # compute combined score for each coin and pick best
     scored = [(k, combined_investment_score(v)) for k, v in crypto_db.items()]
     scored_sorted = sorted(scored, key=lambda x: x[1], reverse=True)
     top_name, top_score = scored_sorted[0]
@@ -195,14 +162,10 @@ def handle_recommendation() -> str:
         f"Top pick: {top_name} — score {top_score:.2f}. {label}."
         "(Scoring uses 60% profitability and 40% sustainability by default.)"
     )
-    # If there are close runners-up, mention them
     if len(scored_sorted) > 1 and scored_sorted[1][1] >= top_score - 0.05:
         explanation += f"Close contender: {scored_sorted[1][0]} (score {scored_sorted[1][1]:.2f})."
     return explanation
 
-# -----------------------
-# Main conversational loop
-# -----------------------
 
 def print_help(tone: str) -> None:
     base = (
@@ -270,7 +233,6 @@ def run_chatbot():
                 print(f"Current tone: {tone}. Available: {', '.join(AVAILABLE_TONES)}")
             continue
 
-        # fallback
         print("Sorry, I didn't understand. Type 'help' for commands.")
 
 
