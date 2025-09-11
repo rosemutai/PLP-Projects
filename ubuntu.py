@@ -24,7 +24,9 @@ def fetch_image():
         with open(filepath, 'wb') as f:
             f.write(r.content)
 
-        print(f"✅ Image saved as: {filepath}")
+        print(f"✓ Successfully fetched: {filename}")
+        print(f"✓ Image saved to {filepath}")
+        print("\nConnection strengthened. Community enriched.")
 
     except requests.exceptions.MissingSchema:
         print("Error: Invalid URL. Please include http:// or https://")
