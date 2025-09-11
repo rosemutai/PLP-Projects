@@ -4,7 +4,7 @@ import seaborn as sns
 from wordcloud import WordCloud
 import streamlit as st
 
-df = pd.read_csv("metadata.csv", low_memory=False)
+df = pd.read_csv("metadata.csv")
 
 print("First 5 rows:")
 print(df.head())
